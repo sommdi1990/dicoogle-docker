@@ -1,7 +1,12 @@
-# <img src="https://user-images.githubusercontent.com/4738426/33545371-e652d482-d8d5-11e7-9ea5-c676d9313378.png" height="50"/>
+# Dicoogle with Docker documentation
 
-[![Java CI with Maven](https://github.com/bioinformatics-ua/dicoogle/actions/workflows/maven.yml/badge.svg)](https://github.com/bioinformatics-ua/dicoogle/actions/workflows/maven.yml)
-[![Build Webapp with Node.js](https://github.com/bioinformatics-ua/dicoogle/actions/workflows/node.yml/badge.svg)](https://github.com/bioinformatics-ua/dicoogle/actions/workflows/node.yml)
+This fork carries the Dicoogle medical imaging platform and a Persian guide to its Docker packaging. The Java tree includes DICOM services and plugin lifecycle management. The SDK exposes extension points for platform plugins.
+
+The Docker guide is the shortest route into the packaging material. The plugin controller shows how the upstream application locates storage and starts or stops plugins. Platform architecture and copyright remain attributable to the upstream Dicoogle project.
+
+- [DOCKER_GUIDE_FA.md](DOCKER_GUIDE_FA.md)
+- [PluginController.java](dicoogle/src/main/java/pt/ua/dicoogle/plugins/PluginController.java)
+- [StorageImpl.java](dicoogle/src/main/java/pt/ua/dicoogle/core/settings/part/StorageImpl.java)
 
 > This is the development branch for Dicoogle 3. [See here](https://github.com/bioinformatics-ua/dicoogle/tree/release/2.X) for the development line of Dicoogle 2, which is being phased out.
 
@@ -13,7 +18,7 @@ The architecture of Dicoogle is described in the following articles:
 - Lebre, R., Pinho, E., Silva, J.M., Costa, C. _Dicoogle Framework for Medical Imaging Teaching and Research_. 2020 IEEE Symposium on Computers and Communications (ISCC) [[link](https://www.researchgate.net/publication/337703675_Dicoogle_Framework_for_Medical_Imaging_Teaching_and_Research)]
 - Valente, F., Silva, L.A.B., Godinho, T.M., Costa, C. _Anatomy of an Extensible Open Source PACS_. J Digit Imaging (2016) 29: 284. doi:10.1007/s10278-015-9834-0 [[link](https://link.springer.com/article/10.1007/s10278-015-9834-0)]
 
-Our official website is at https://www.dicoogle.com. A few essential plugins for Dicoogle are available to download there, as well as a built jar of the Dicoogle platform. To learn how to use Dicoogle, please see our [Learning Pack](https://bioinformatics-ua.github.io/dicoogle-learning-pack). To build the core platform yourself, please see the section on [Building Dicoogle](#building-dicoogle) below. The learning pack also has a page on [Building Dicoogle](https://bioinformatics-ua.github.io/dicoogle-learning-pack/docs/building/).
+Our official website is at https://www.dicoogle.com. A few essential plugins for Dicoogle are available to download there, as well as a built jar of the Dicoogle platform. To learn how to use Dicoogle, please see our [Learning Pack](https://bioinformatics-ua.github.io/dicoogle-learning-pack). To build the core platform yourself, please see the section on Building Dicoogle below. The learning pack also has a page on [Building Dicoogle](https://bioinformatics-ua.github.io/dicoogle-learning-pack/docs/building/).
 
 Brief Documentation
 -------------------
@@ -24,31 +29,31 @@ Brief Documentation
 
       This folder will hold the plugins used by our instance of the Dicoogle Platform.
   3. Next, copy the desired plugins into the DicoogleDir/Plugins Folder.
-      
-      The typical setup of Dicoogle involves the deployment of an Indexing and Query Plugin. 
-      We supply an implementation of such plugin based in Apache Lucene. 
+
+      The typical setup of Dicoogle involves the deployment of an Indexing and Query Plugin.
+      We supply an implementation of such plugin based in Apache Lucene.
   4. Run Dicoogle.
-  
+
       Dicoogle may be run as a server: ```java -jar dicoogle.jar -s```
 
       To load the server and open Dicoogle's user interface with the default browser: ```java -jar dicoogle.jar```
 
 #### Available Plugins
-  
+
   We provide a few plugins at the official website, in the [Downloads](https://dicoogle.com/downloads/) page.
 
   * Lucene Index/Query Plugin - (lucene.jar)
-      
+
       Plugin Based on Apache Lucene to support indexing and querying of DICOM meta-data. With this plugin set, it is possible to index nearly meta-data and perform free text, keyword-based, and range-based queries.
-      
+
   * File Storage Plugin - (filestorage.jar)
 
       Plugin used for the storage of DICOM Files. This plugin is necessary in order to use Dicoogle as a complete DICOM Storage Provider. The core platform provides a fallback implementation which supports reading (but not storing) files from the local file system.
-      
-      For storage purposes, our file storage plugin maps the DICOM hierarchical organization (Patient->Study->Series->Image) into a directory tree in the file system. Every object in the Dicoogle Platform may be traced back to its storage location by a URI, similar to file:/tmp/file. In order to support multiple providers, every Storage plugin must define a unique scheme, which maps to the protocol used to store and retrieve content. 
-      
+
+      For storage purposes, our file storage plugin maps the DICOM hierarchical organization (Patient->Study->Series->Image) into a directory tree in the file system. Every object in the Dicoogle Platform may be traced back to its storage location by a URI, similar to file:/tmp/file. In order to support multiple providers, every Storage plugin must define a unique scheme, which maps to the protocol used to store and retrieve content.
+
       * Settings
-      
+
         * `root-dir`: is the root directory where DICOM Files will be stored
         * `scheme`: Specifies the scheme/protocol of the file plugin. This value is arbitrary, but must be unique among all installed plugins. As such, avoid using well known protocol names such as http or file.
 
@@ -65,9 +70,9 @@ Brief Documentation
 
   * Index a Directory
 
-      Indexing a directory is done simply by accessing the Indexer page, on the side bar. 
+      Indexing a directory is done simply by accessing the Indexer page, on the side bar.
       In this page, one can select a root directory to index. The path is a URI defined according to the storage provider, and defaults to the `file` scheme.
-      
+
       In the Management pange, one may also enable the Dicoogle Directory Watcher, which creates a daemon that listens for new files in the root directory.
       After selecting the configurations, the "Apply Settings" button must be pressed.
       When the right settings are saved, the Start buttons fires the indexing process. Please note that this process may take considerable time to complete.
@@ -76,50 +81,50 @@ Brief Documentation
 
       The search page enables users to execute queries over the indexed meta-data.
       The query syntax is similar to the Lucene's Tag:Value query format, but free text searches are also supported. For inexperienced users, an advanced input module may also be used.
-      
+
       In the search interface, it is also possible to select which providers to query. Query providers are actually Query Plugins, that are installed either in the local instance of Dicoogle, or in remote instances if the platform is using the WAN plugin. Therefore, be careful and select exactly which providers you want to query, in order to retrieve more accurate and faster results.
 
-  * Export Results 
+  * Export Results
 
       After running a query, the result browser shows up, giving the user an intuitive hierarchical view of the results. On this page, there is also an Export button, which is used in order to export the query results into a CSV file. When the export button is clicked, the user has to select which tags (s)he wants to export in the CSV file. This selection is heavily assisted by the interface, on which the user may type an incomplete tag and have presented the available candidates that match the inserted term. Moreover, the text box allows users to copy a list of tags directly from another CSV file, enabling an easier generation of reports.
 
 #### Using the Web Services
 
   Let us assume that the Web Services for our instance of Dicoogle are running in https://demo.dicoogle.com/
- 
+
   * Searching
      Dicoogle provides a flexible web service for querying, under the `/search` endpoint.
-  
+
     * Search by Date Range, Access images in date 2005/03/29
 
        Query: `"StudyDate:[20050329 TO 20050329]"`
-       
+
        URL: `https://demo.dicoogle.com/search?query=StudyDate:[20050329%20TO%2020050329]`
-    
+
     * Access images in date 2005/03/29 and CT (Computer Tomography) modality
-        
+
        Query: `"Modality:CT AND StudyDate:[20050329 TO 20050329]"`
-       
+
        URL: `https://demo.dicoogle.com/search?query=Modality:CT%20AND%20StudyDate:[20050329%20TO%2020050329]`
 
     * Free text search, looking for CT keyword
 
        Query: `CT`
-       
+
        URL: `https://demo.dicoogle.com/search?query=CT`
 
   * Access the list of attributes of an image (by SOPInstanceUID)
 
      URL: `https://demo.dicoogle.com/dump?uid=1.3.12.2.1107.5.1.4.54023.30000005032914013107800000965`
-  
+
   * Get a DICOM File
 
      URL: `https://demo.dicoogle.com/legacy/file?uid=1.3.12.2.1107.5.1.4.54023.30000005032914013107800000965`
 
   * Return documents from particular query providers (useful for queries that do not follow the typical Lucene query format)
-  
+
     URL: `https://demo.dicoogle.com/search?query=Modality:NM&provider=lucene&provider=mongo`
-    
+
     Parameters:
       - query : Query String
       - provider: name of the query providers - multiple - optional
@@ -129,7 +134,7 @@ Brief Documentation
   * Force Dicoogle to index a given Resource. (useful when conventional notification systems (DICOM Services, DirectoryMonitoring, Human Interface) fail to start the index procedure)
 
     URL: `https://demo.dicoogle.com/management/tasks/index?uri=file:/tmp/dataset-ieeta/`
-    
+
     - Method: `POST`
     - Parameters:
       - uri: The root identifier of the resources that will be indexed. Please note that Dicoogle will fetch these resources from a storage plugin. Therefore, a plugin capable of handling these resources must be enabled. The provider is identified by the URI's scheme.
@@ -142,7 +147,7 @@ We also have programmatic APIs for interfacing with Dicoogle in [JavaScript](htt
 
   In order to integrate new functionalities in Dicoogle, you may create your own plugin set. A plugin set comprises plugins that are developed with the intent of supporting a given feature, and are packaged in a single jar file for deployment. See the learning pack on [Plugin Development](https://bioinformatics-ua.github.io/dicoogle-learning-pack/docs/developing-plugins/) for our guide (we also have a [wiki page](https://github.com/bioinformatics-ua/dicoogle/wiki/Plugin-Development)), and our [sample plugin project](https://github.com/bioinformatics-ua/dicoogle-plugin-sample) for a base project from which you can start making your own plugins.
 
-### Building Dicoogle 
+### Building Dicoogle
 
 Before building, please make sure that your system contains the following tools:
 
@@ -200,4 +205,3 @@ Project leaders
 
 * Carlos Costa and José Luis Oliveira (UA.PT Bioinformatics, scientific advisors)
 * Luís Bastião (BMD software - development)
-
